@@ -1,6 +1,6 @@
 # PROJETO_ANTI_FRAUDE
 
-# 🛡️ Anti-Furto - Detector de Cartões (DIO Challenge)
+# 🛡️ Anti-Fraude - Detector de Cartões (DIO Challenge)
 
 > Projeto simples para demonstração de integração com Azure Blob Storage e um serviço de análise de dados (ex.: detecção/validação de informações de cartão em imagens).  
 > Implementado como uma aplicação web leve usando **Streamlit** para upload de imagens e retorno de validação.
@@ -9,7 +9,7 @@
 
 ## ✅ Visão Geral
 
-O **Anti-Furto** permite que o usuário faça upload de uma imagem (formato PNG/JPG/JPEG) com um suposto cartão de crédito.  
+O **Anti-Fraude** permite que o usuário faça upload de uma imagem (formato PNG/JPG/JPEG) com um suposto cartão de crédito.  
 O fluxo principal:
 
 1. O usuário faz upload da imagem via interface Streamlit (`app.py`).
