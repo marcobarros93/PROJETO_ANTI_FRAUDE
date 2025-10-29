@@ -1,34 +1,43 @@
 import streamlit as st
-from services.blob_service import upload_blob
-from services.credit_card_service import analize_credit_card
+from services.blob_service import upload_image_to_blob
+from services.credit_card_service import analyze_credit_card
+from utils.config import get_connection_string
 
-def configure_interface():
-    st.title("Upload de Arquivo DIO - Desafio 1 - Azure  Fake Docs")
-    uploaded_file = st.file_uploader("Escolha um arquivo", type["png", "jpg", "jpeg"])
+# Função separada para exibir imagem e resultado da validação
+def show_image_and_validation(image, validation_result):
+    """Exibe a imagem enviada e o resultado da validação."""
+    st.image(image, caption="Imagem enviada", use_column_width=True)
+    st.write("### Resultado da análise:")
+    st.json(validation_result)
 
-    if uploaded_file is not None:
-        fileName = uploaded_file.name
-        # Enviar para o blob storage
-        blob_url = upload_blob(uploaded_file, fileName)
-        if blob_url:
-            st.write(f"Arquivo {fileName} enviado com sucesso para o Azure Blob Storage")
-            #Chamar a função de detecção de informações de cartão de crédito
-            credit_card_info = analize_credit_card(blob_url)
-            show_image_and_validation(blob_url, credit_card_info)
-        else:
-            st.write(f"Erro ao enviar o arquivo {fileName} para o Azure Blob Storage")
+# Título principal
+st.title("Sistema de Detecção de Fraudes em Cartões")
 
-        def show_image_and_validation(blob_url, credit_card_info):
-            st.image(blob_url, caption="Imagem enviada", use_column_width=True)
-            st.write("Resultado da validação")
-            if credit_card_info and credit_card_info["card name"]:
-                st.markdown(f"<h1 style='color: green;'>Cartão Válido</h1>", unsafe_allow_html=True)
-                st.write(f"Nome do Titular: {credit_card_info['card name']}")
-                st.write(f"Banco Emissor: {credit_card_info['bank name']}")
-                st.write(f"Data de Validade: {credit_card_info['expiry_date']}")
-            else:
-                st.markdown(f"<h1 style='color: red;'>Cartão Inválido</h1>", unsafe_allow_html=True)
-                st.write("Este não é um cartão de crédito válido.")
+# Upload da imagem
+uploaded_file = st.file_uploader("Envie uma imagem do cartão de crédito", type=["jpg", "jpeg", "png"])
 
-if __name__ == "__main__":
-    configure_interface()
+if uploaded_file is not None:
+    st.success("Imagem carregada com sucesso!")
+
+    # Exibe a imagem enviada
+    st.image(uploaded_file, caption="Imagem carregada", use_column_width=True)
+
+    # Botão para processar a imagem
+    if st.button("Validar Cartão"):
+        try:
+            connection_string = get_connection_string()
+
+            # Faz upload da imagem para o Azure Blob
+            blob_url = upload_image_to_blob(uploaded_file, connection_string)
+            st.write("Imagem enviada para o Blob com sucesso!")
+
+            # Envia a imagem para o modelo de IA
+            validation_result = analyze_credit_card(blob_url)
+
+            # Mostra os resultados
+            show_image_and_validation(uploaded_file, validation_result)
+
+        except Exception as e:
+            st.error(f"Ocorreu um erro: {e}")
+else:
+    st.info("Por favor, envie uma imagem para continuar.")

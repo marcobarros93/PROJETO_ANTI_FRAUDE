@@ -19,5 +19,24 @@ O fluxo principal:
 
 > ⚠️ Este projeto é **para fins educacionais** e demonstra integração de componentes — **não deve ser usado** em produção para processar dados sensíveis sem cumprir requisitos legais, de privacidade e segurança.
 
+---
+
+## 📂 Estrutura do Repositório
+
+PROJETO_ANTI_FRAUDE/
+│
+├── src/
+│   ├── services/
+│   │   └── blob_service.py
+│   │   └── credit_card_service.py
+│   │
+│   ├── utils/
+│   │   └── config.py
+│   │
+│   └── app.py
+│
+├── .env
+├── requirements.txt
+└── README.md
 
 
